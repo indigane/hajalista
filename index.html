@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hajalista</title>
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="layout">
+      <div class="itemlist-container">
+        <div class="itemlist"></div>
+      </div>
+      <div class="checklist-container">
+        <div class="checklist"></div>
+      </div>
+      <div class="bottom-bar">
+        <div class="bottom-bar-inner">
+          <div class="editmode-toggle">
+            <svg-icon src="img/icon-edit.svg" class="toggle-on"></svg-icon>
+            <svg-icon src="img/icon-close.svg" class="toggle-off"></svg-icon>
+          </div>
+          <form class="add-form">
+            <input type="text">
+            <button type="submit">
+              <svg-icon src="img/icon-add.svg"></svg-icon>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script async src="js/svg-icon.js"></script>
+    <script src="js/bugout-0.0.13.min.js"></script>
+    <script src="js/connection.js" type="module"></script>
+    <script type="module">
+      import ItemlistItemElement from './js/hmfill.js?./itemlist-item.html';
+      import ChecklistItemElement from './js/hmfill.js?./checklist-item.html';
+      customElements.define('itemlist-item', ItemlistItemElement);
+      customElements.define('checklist-item', ChecklistItemElement);
+    </script>
+    <script src="js/script.js" type="module"></script>
+  </body>
+</html>
+

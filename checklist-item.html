@@ -1,0 +1,106 @@
+<template>
+  <style>
+    @import 'css/common.css';
+    @import 'css/checkbox.css';
+    label {
+      display: flex;
+      min-height: 1.8rem;
+      flex-direction: row-reverse;
+      align-items: center;
+      padding: 0.25rem;
+      font-size: 20px;
+      color: inherit;
+      cursor: pointer;
+    }
+    input[type="checkbox"] {
+      margin-left: 0.5em;
+      cursor: inherit;
+    }
+    input[type="checkbox"]:checked ~ .text {
+      text-decoration: line-through;
+      text-decoration-thickness: 0.1em;
+      text-decoration-color: currentColor;
+    }
+    :host(.editmode-active) input[type="checkbox"]:checked ~ .text {
+      text-decoration-color: rgba(0, 0, 0, .3);
+      opacity: .5;
+    }
+    :host(.editmode-active) input[type="checkbox"],
+    :host(:not(.editmode-active)) .button-delete {
+      display: none;
+    }
+    .button-delete {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 24px;
+      min-width: 24px;
+      height: 100%;
+      border: 0;
+      background: transparent;
+      margin: -2px;
+      margin-left: 0.1em;
+      padding: 0;
+      color: inherit;
+      cursor: pointer;
+    }
+    .button-delete svg-icon {
+      width: 24px;
+      height: 24px;
+    }
+    .text {
+      position: relative;
+      flex-grow: 1;
+      min-width: 1px;
+      word-break: break-word;
+    }
+  </style>
+  <label>
+    <input type="checkbox">
+    <button class="button-delete" type="button">
+      <svg-icon src="img/icon-delete.svg"></svg-icon>
+    </button>
+    <div class="text">
+      <slot></slot>
+    </div>
+  </label>
+</template>
+<script type="module">
+  import { elementEvent, documentEvent } from './js/shorthands.js';
+  const template = import.meta.document.querySelector('template');
+  class ChecklistItemElement extends HTMLElement {
+    constructor() {
+      super();
+      const shadowRoot = this.attachShadow({mode: 'open'});
+      shadowRoot.appendChild(template.content.cloneNode(true));
+    }
+    connectedCallback() {
+      const host = this;
+      const root = host.shadowRoot;
+      const checkbox = root.querySelector('input[type="checkbox"]');
+      if (host._item?.text !== undefined) {
+        host.textContent = host._item.text;
+        checkbox.checked = host._item.isChecked;
+      }
+      checkbox.addEventListener('change', function handleChange() {
+        elementEvent(host, 'checklistitem.change', {
+          item: host._item,
+          isChecked: checkbox.checked,
+        });
+      });
+      root.querySelector('.button-delete').addEventListener('click', function handleClick() {
+        elementEvent(host, 'checklistitem.delete', {
+          item: host._item,
+        });
+      });
+      host.classList.toggle('editmode-active', globalThis._editmodeIsActive);
+      document.addEventListener('editmode.change', function handleChange(event) {
+        host.classList.toggle('editmode-active', event.detail.isActive);
+      });
+      elementEvent(host, 'load', {
+        item: host._item,
+      });
+    }
+  }
+  export default ChecklistItemElement;
+</script>

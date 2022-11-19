@@ -1,0 +1,133 @@
+@import 'common.css';
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: sans-serif;
+}
+
+.layout {
+  --left-area-size: 0px;
+  --right-area-size: 1fr;
+  --layout-gutter: 1rem;
+  --shadow-color: rgba(0, 0, 0, .2);
+  --radius-1: 10px;
+  display: grid;
+  grid-template-columns: var(--left-area-size) var(--right-area-size);
+  grid-template-rows: 1fr;
+  grid-template-areas:
+    "left right";
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Itemlist */
+.itemlist-container {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  padding: 1rem 1rem 6rem 1rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #fff;
+  box-shadow: 0 2px 10px var(--shadow-color);
+  transform: translateX(calc(-1 * (100% + 1rem)));
+}
+.editmode-active .itemlist-container {
+  transform: translateX(0);
+}
+.editmode-active {
+  --left-area-size: 1fr;
+}
+.itemlist {
+  min-height: calc(75vh);
+}
+
+/* Checklist */
+.checklist-container {
+  grid-area: right;
+  padding: 1rem 1rem 6rem 1rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #ff9;
+  box-shadow: 0 2px 10px var(--shadow-color);
+}
+.checklist {
+  min-height: calc(100vh - 7rem);
+}
+
+/* Edit mode */
+.bottom-bar {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bottom-bar-inner {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 0.5rem;
+  background: #fff;
+  box-shadow: 0 2px 10px var(--shadow-color);
+  pointer-events: auto;
+  transform: translateY(100%);
+}
+.editmode-active .bottom-bar-inner {
+  transform: translateY(0);
+}
+.layout:not(.editmode-active) .bottom-bar-inner :is(button, input) {
+  display: none;
+}
+.editmode-toggle {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  left: calc(50% - 6rem / 2);
+  bottom: 100%;
+  width: 6rem;
+  height: 2.5rem;
+  font-size: 0;
+  border-top-left-radius: 100% 200%;
+  border-top-right-radius: 100% 200%;
+  background: #fff;
+  box-shadow: 0 2px 10px var(--shadow-color);
+  clip-path: polygon(
+    -100% -100%,
+    200% -100%,
+    200% 100%,
+    -100% 100%
+  );
+  cursor: pointer;
+}
+.editmode-toggle svg-icon {
+  width: 1.5rem;
+  transform: translateX(calc(-1 * var(--toggle-button-size) / 20));
+}
+.editmode-active .toggle-on,
+.editmode-toggle .toggle-off {
+  display: none;
+}
+.editmode-active .toggle-off {
+  display: initial;
+}
+.add-form {
+  display: flex;
+}
+.add-form input {
+  width: 0;
+  flex-grow: 1;
+  padding-left: 0.5rem;
+  font-size: inherit;
+}
+.add-form button {
+  margin-left: 0.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 0;
+}

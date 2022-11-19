@@ -1,0 +1,73 @@
+<template>
+  <style>
+    @import 'css/common.css';
+    :host {
+      display: flex;
+      min-height: 1.8rem;
+      flex-direction: row-reverse;
+      align-items: center;
+      padding: 0.25rem;
+      font-size: 20px;
+      color: inherit;
+      cursor: pointer;
+    }
+    .button-add {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 24px;
+      min-width: 24px;
+      height: 100%;
+      border: 0;
+      background: transparent;
+      margin: -2px;
+      margin-left: 0.1em;
+      padding: 0;
+      color: inherit;
+      cursor: pointer;
+    }
+    .button-add svg-icon {
+      width: 24px;
+      height: 24px;
+    }
+    .text {
+      position: relative;
+      flex-grow: 1;
+      min-width: 1px;
+      word-break: break-word;
+    }
+  </style>
+  <button class="button-add" type="button">
+    <svg-icon src="img/icon-arrow-right.svg"></svg-icon>
+  </button>
+  <div class="text">
+    <slot></slot>
+  </div>
+</template>
+<script type="module">
+  import { elementEvent, documentEvent } from './js/shorthands.js';
+  const template = import.meta.document.querySelector('template');
+  class ItemlistItemElement extends HTMLElement {
+    constructor() {
+      super();
+      const shadowRoot = this.attachShadow({mode: 'open'});
+      shadowRoot.appendChild(template.content.cloneNode(true));
+    }
+    connectedCallback() {
+      const host = this;
+      const root = host.shadowRoot;
+      if (host._item?.text !== undefined) {
+        host.textContent = host._item.text;
+      }
+      root.querySelector('.button-add').addEventListener('click', function handleClick() {
+        elementEvent(host, 'itemlistitem.add-button', {
+          item: host._item,
+        });
+      });
+      elementEvent(host, 'load', {
+        item: host._item,
+      });
+    }
+  }
+  export default ItemlistItemElement;
+</script>
